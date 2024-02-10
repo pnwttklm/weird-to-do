@@ -134,7 +134,9 @@ export default function Home() {
   const [editTodo, setEditTodo] = useState<string | undefined>(
     selectedItem?.todo
   );
-  const [imagesE, setImagesE] = useState<String | null | undefined>(selectedItem?.image);
+  const [imagesE, setImagesE] = useState<String | null | undefined>(
+    selectedItem?.image
+  );
 
   useEffect(() => {
     if (selectedItem) {
@@ -159,7 +161,7 @@ export default function Home() {
           data: imageData,
         };
         setImagesE(newImage.data);
-        localStorage.setItem('uploadedImages', JSON.stringify(newImage));
+        // localStorage.setItem("uploadedImages", JSON.stringify(newImage));
       };
       reader.readAsDataURL(file);
     }
@@ -196,8 +198,8 @@ export default function Home() {
     onOpenE();
   };
 
-  function handleUp(id:number){
-    const index = list.findIndex(item => item.id === id);
+  function handleUp(id: number) {
+    const index = list.findIndex((item) => item.id === id);
     if (index > 0) {
       const newList = [...list];
       const temp = newList[index];
@@ -205,9 +207,9 @@ export default function Home() {
       newList[index - 1] = temp;
       setList(newList);
     }
-  };
-  function handleDown(id:number){
-    const index = list.findIndex(item => item.id === id);
+  }
+  function handleDown(id: number) {
+    const index = list.findIndex((item) => item.id === id);
     if (index < list.length - 1) {
       const newList = [...list];
       const temp = newList[index];
@@ -215,9 +217,8 @@ export default function Home() {
       newList[index + 1] = temp;
       setList(newList);
     }
-  };
+  }
 
-  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -229,17 +230,17 @@ export default function Home() {
           data: imageData,
         };
         setImages(newImage);
-        localStorage.setItem('uploadedImages', JSON.stringify(newImage));
+        // localStorage.setItem("uploadedImages", JSON.stringify(newImage));
       };
       reader.readAsDataURL(file);
     }
   };
-  useState(() => {
-    const uploadedImages = localStorage.getItem('uploadedImages');
-    if (uploadedImages) {
-      setImages(JSON.parse(uploadedImages));
-    }
-  });
+  // useState(() => {
+  //   const uploadedImages = localStorage.getItem("uploadedImages");
+  //   if (uploadedImages) {
+  //     setImages(JSON.parse(uploadedImages));
+  //   }
+  // });
   return (
     <>
       <h1>My To-Do List</h1>
@@ -258,18 +259,23 @@ export default function Home() {
                 onChange={() => handleCheck(item.id)}
               />
               {item.image && (
-                    <Image
-                    src={String(item.image)}
-                    alt="Image"
-                    width={100} 
-                    height={100}
-                  />
-                  )}
+                <Image
+                  src={String(item.image)}
+                  alt="Image"
+                  width={100}
+                  height={100}
+                />
+              )}
               {item.id}
               {item.todo}
               {editChecked && (
                 <>
-                  <Button colorScheme={"red"} onClick={() => handleRemove(item.id)}>Remove</Button>
+                  <Button
+                    colorScheme={"red"}
+                    onClick={() => handleRemove(item.id)}
+                  >
+                    Remove
+                  </Button>
                   <Button onClick={() => openModal(item.id)}>Edit</Button>
                   <Button onClick={() => handleUp(item.id)}>Up</Button>
                   <Button onClick={() => handleDown(item.id)}>Down</Button>
@@ -300,24 +306,24 @@ export default function Home() {
           <ModalBody>
             <Input placeholder="Enter a new to-do" onChange={handleChangeAdd} />
             <div>
-                <Center className="flex flex-col mt-6">
-                  <h1 className="text-xl">อัปโหลดรูป</h1>
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    id="fileInput"
-                    accept="image/png, image/jpeg"
-                  />
-                  {images && (
-                    <Image
+              <Center className="flex flex-col mt-6">
+                <h1 className="text-xl">อัปโหลดรูป</h1>
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  id="fileInput"
+                  accept="image/png, image/jpeg"
+                />
+                {images && (
+                  <Image
                     src={String(images.data)}
                     alt="Image"
-                    width={100} 
+                    width={100}
                     height={100}
                   />
-                  )}
-                </Center>
-              </div>
+                )}
+              </Center>
+            </div>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>Close</Button>
@@ -337,24 +343,24 @@ export default function Home() {
               onChange={handleChangeEdit}
             />
             <div>
-                <Center className="flex flex-col mt-6">
-                  <h1 className="text-xl">อัปโหลดรูป</h1>
-                  <input
-                    type="file"
-                    onChange={handleFileChangeE}
-                    id="fileInput"
-                    accept="image/png, image/jpeg"
-                  />
-                  {imagesE && (
-                    <Image
+              <Center className="flex flex-col mt-6">
+                <h1 className="text-xl">อัปโหลดรูป</h1>
+                <input
+                  type="file"
+                  onChange={handleFileChangeE}
+                  id="fileInput"
+                  accept="image/png, image/jpeg"
+                />
+                {imagesE && (
+                  <Image
                     src={String(imagesE)}
                     alt="Image"
-                    width={100} 
+                    width={100}
                     height={100}
                   />
-                  )}
-                </Center>
-              </div>
+                )}
+              </Center>
+            </div>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onCloseE}>Close</Button>
