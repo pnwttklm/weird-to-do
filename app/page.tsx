@@ -30,8 +30,6 @@ type TodoItem = {
   userId: number;
 };
 
-
-
 export default function Home() {
   const [list, setList] = useState<TodoItem[]>([]);
 
@@ -98,16 +96,6 @@ export default function Home() {
     setEditChecked(!editChecked);
   };
 
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-
-    const items = Array.from(list);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setList(items);
-  };
-
   const fetchData = async () => {
     try {
       const response = await fetch("https://dummyjson.com/todos");
@@ -139,6 +127,52 @@ export default function Home() {
     fileInput.click();
   };
 
+  // const handleEdit = (id: number) => {
+    
+  //   handleEditItem(id, );
+  // }
+  const [selectedItem, setSelectedItem] = useState<TodoItem | undefined>();
+  const [editTodo, setEditTodo] = useState<string | undefined>(selectedItem?.todo);
+
+  useEffect(() => {
+    if (selectedItem) {
+      setEditTodo(selectedItem.todo);
+    } else {
+      setEditTodo(undefined);
+    }
+  }, [selectedItem]);
+  
+  const handleChangeEdit = (event: any) => setEditTodo(event.target.value);
+
+  const handleEditItem = () => {
+    const updatedList = list.map((item) => {
+      if (item.id === selectedItem?.id) {
+        return {
+          id: item.id,
+          todo: String(editTodo),
+          completed: item.completed,
+          userId: item.userId,
+        };
+      } else {
+        return item;
+      }
+    });
+    setList(updatedList);
+    onCloseE();
+  }
+
+
+  const { isOpen: isOpenE, onOpen: onOpenE, onClose: onCloseE } = useDisclosure();
+
+  // function EditModal(id:number){
+  //   const [newTodo, setNewTodo] = useState("");
+  // }
+  
+  const openModal = (id:number) => {
+    setSelectedItem(list.find((item) => item.id === id));
+    onOpenE();
+  };
+
   return (
     <>
       <h1>My To-Do List</h1>
@@ -161,6 +195,7 @@ export default function Home() {
               {editChecked && (
                 <>
                   <Button onClick={() => handleRemove(item.id)}>Remove</Button>
+                  <Button onClick={() => openModal(item.id)}>Edit</Button>
                 </>
               )}
             </div>
@@ -194,6 +229,24 @@ export default function Home() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <Modal onClose={onCloseE} isOpen={isOpenE} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit To-Do</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input placeholder={selectedItem?.todo} value={editTodo} onChange={handleChangeEdit} />
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onCloseE}>Close</Button>
+            <Button onClick={handleEditItem}>Save</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+
+      
     </>
   );
 }
