@@ -16,7 +16,12 @@ import {
   Checkbox,
 } from "@chakra-ui/react";
 
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "react-beautiful-dnd";
 
 type TodoItem = {
   id: number;
@@ -91,6 +96,47 @@ export default function Home() {
     setEditChecked(!editChecked);
   };
 
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const items = Array.from(list);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setList(items);
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("https://dummyjson.com/todos");
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const data = await response.json();
+      setList(data.todos);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchImport = () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".json";
+    fileInput.onchange = async (event) => {
+      if (!event.target.files) return;
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        if (!event.target?.result) return;
+        const data = JSON.parse(event.target.result as string);
+        setList(data);
+      };
+      reader.readAsText(file);
+    };
+    fileInput.click();
+  };
+
   return (
     <>
       <h1>My To-Do List</h1>
@@ -99,30 +145,25 @@ export default function Home() {
       </h1>
       {editChecked && <h1>Edit Mode</h1>}
       <div className="flex flex-col">
-        
-                {list.map((item) => {
-                  return (
-                          <div key={item.id}>
-                            <Checkbox
-                              checked={item.completed}
-                              size="lg"
-                              colorScheme="green"
-                              onChange={() => handleCheck(item.id)}
-                            />
-                            {item.id}
-                            {item.todo}
-                            {editChecked && (
-                              <>
-                                <Button onClick={() => handleRemove(item.id)}>
-                                  Remove
-                                </Button>
-                              </>
-                            )}
-                          </div>
-                        
-                  );
-                })}
-              
+        {list.map((item) => {
+          return (
+            <div key={item.id}>
+              <Checkbox
+                isChecked={item.completed}
+                size="lg"
+                colorScheme="green"
+                onChange={() => handleCheck(item.id)}
+              />
+              {item.id}
+              {item.todo}
+              {editChecked && (
+                <>
+                  <Button onClick={() => handleRemove(item.id)}>Remove</Button>
+                </>
+              )}
+            </div>
+          );
+        })}
       </div>
       <Button onClick={onOpen}>Add</Button>
       <Button onClick={exportListToFile}>Export List</Button>
@@ -134,6 +175,9 @@ export default function Home() {
         onChange={() => handleEdit()}
       />{" "}
       {editChecked ? "On" : "Off"}
+      <Button onClick={() => setList([])}>Clear List</Button>
+      <Button onClick={fetchData}>Fetch Data</Button>
+      <Button onClick={fetchImport}>Import To-Do</Button>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
