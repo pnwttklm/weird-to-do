@@ -16,6 +16,7 @@ import {
   Checkbox,
   Center,
 } from "@chakra-ui/react";
+import { BsPen, BsChevronDown, BsChevronUp, BsFolder2Open, BsPlusCircleFill, BsTrash3, BsArrowDownCircle, BsXCircle } from "react-icons/bs";
 
 type TodoItem = {
   id: number;
@@ -242,21 +243,56 @@ export default function Home() {
   //   }
   // });
   return (
-    <>
-      <h1>My To-Do List</h1>
-      <h1>
+    <div className="px-96 p-24">
+      <div className="flex flex-row justify-between">
+        <h1 className="text-6xl font-extrabold">My To-Do List</h1>
+        <h1 className="text-6xl font-extrabold">
+          {list.length - completedCount}
+        </h1>
+      </div>
+      <h1 className="">
         Completed: {completedCount}|{list.length}
       </h1>
-      {editChecked && <h1>Edit Mode</h1>}
-      <div className="flex flex-col">
+      <div className="flex flex-row justify-between mt-6 mb-12 place-content-center">
+        <div>
+          Edit Mode:{" "}
+          <Switch
+            colorScheme="teal"
+            size="lg"
+            checked={editChecked}
+            onChange={() => handleEdit()}
+          />{" "}
+          {editChecked ? "On" : "Off"}
+        </div>
+        <div>
+        <Button className="gap-3" onClick={fetchImport}><BsFolder2Open className="text-xl"/>Import</Button>
+          <Button
+            onClick={onOpen}
+            className="rounded-full"
+            rounded={"full"}
+            bg={"[#FFFFFF00]"}
+          >
+            <BsPlusCircleFill className="text-4xl" />
+          </Button>
+        </div>
+      </div>
+      {editChecked && <h1 className="bg-[#000000] text-white rounded-full px-3 py-2 font-extrabold w-32 text-center">Edit Mode</h1>}
+      {list.length ==0 && <Center className="flex flex-col text-[#b6b6b6] border-2 w-full h-64 shadow-2xl rounded-3xl ">
+        <h1 className="text-3xl text-center font-bold">Your To-Do is Empty</h1>
+        <h1 className="text-xl text-center">Try add a new To-Do by click + Button at the upper right.</h1>
+        <h1 className="text-xl text-center">or if you have nothing to do <Button onClick={fetchData} bg={"#00000000"}>Click Here</Button></h1>
+          </Center>}
+      <div className="flex flex-col gap-1">
         {list.map((item) => {
           return (
-            <div key={item.id}>
+            <div key={item.id} className="flex flex-row bg-[#FFFFFF] shadow-2xl rounded-2xl p-3 justify-between content-center">
+              <div className="flex flex-row ">
               <Checkbox
                 isChecked={item.completed}
                 size="lg"
                 colorScheme="green"
                 onChange={() => handleCheck(item.id)}
+                className="mr-3"
               />
               {item.image && (
                 <Image
@@ -264,40 +300,40 @@ export default function Home() {
                   alt="Image"
                   width={100}
                   height={100}
+                  className="rounded-xl w-16 h-16 mr-3"
                 />
               )}
-              {item.id}
-              {item.todo}
+              {/* {item.id} */}
+              <h1 className="text-lg">{item.todo}</h1>
+              </div>
+              <div className="content-center">
               {editChecked && (
-                <>
+                <div className="content-center">
+                <Button onClick={() => openModal(item.id)} gap={2} mr={3}><BsPen/>Edit</Button>
+                  <Button onClick={() => handleUp(item.id)} mr={1} rounded={"full"}
+                    paddingX={-1}><BsChevronUp/></Button>
+                  <Button onClick={() => handleDown(item.id)} mr={3} rounded={"full"}
+                    paddingX={-1}><BsChevronDown/></Button>
                   <Button
                     colorScheme={"red"}
                     onClick={() => handleRemove(item.id)}
+                    rounded={"full"}
+                    paddingX={-1}
                   >
-                    Remove
+                    <BsTrash3/>
                   </Button>
-                  <Button onClick={() => openModal(item.id)}>Edit</Button>
-                  <Button onClick={() => handleUp(item.id)}>Up</Button>
-                  <Button onClick={() => handleDown(item.id)}>Down</Button>
-                </>
+                </div>
+                
               )}
+              </div>
             </div>
           );
         })}
       </div>
-      <Button onClick={onOpen}>Add</Button>
-      <Button onClick={exportListToFile}>Export List</Button>
-      Edit Mode:{" "}
-      <Switch
-        colorScheme="teal"
-        size="lg"
-        checked={editChecked}
-        onChange={() => handleEdit()}
-      />{" "}
-      {editChecked ? "On" : "Off"}
-      <Button onClick={() => setList([])}>Clear List</Button>
-      <Button onClick={fetchData}>Fetch Data</Button>
-      <Button onClick={fetchImport}>Import To-Do</Button>
+      <div className="flex flex-row justify-between mt-12">
+      <Button onClick={exportListToFile} className="gap-3"><BsArrowDownCircle className="text-xl"/>Export</Button>
+      <Button onClick={() => setList([])} className="gap-3"><BsXCircle className="text-xl"/>Clear List</Button>
+      </div>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
@@ -368,6 +404,6 @@ export default function Home() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 }
