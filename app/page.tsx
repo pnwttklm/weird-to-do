@@ -30,6 +30,8 @@ type TodoItem = {
   userId: number;
 };
 
+
+
 export default function Home() {
   const [list, setList] = useState<TodoItem[]>([]);
 
@@ -124,15 +126,15 @@ export default function Home() {
     fileInput.type = "file";
     fileInput.accept = ".json";
     fileInput.onchange = async (event) => {
-      if (!event.target.files) return;
-      const file = event.target.files[0];
+      if (!(event.target as HTMLInputElement).files) return;
+      const file = (event.target as HTMLInputElement).files?.[0];
       const reader = new FileReader();
       reader.onload = async (event) => {
         if (!event.target?.result) return;
         const data = JSON.parse(event.target.result as string);
         setList(data);
       };
-      reader.readAsText(file);
+      reader.readAsText(file!);
     };
     fileInput.click();
   };
