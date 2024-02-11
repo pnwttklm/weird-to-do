@@ -17,7 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Providers><body className={ibm.className}>{children}</body></Providers>
+        <body className={ibm.className}>
+        <Providers>
+          {children}
+          </Providers>
+          </body>
     </html>
   );
-}
+};

@@ -16,7 +16,17 @@ import {
   Checkbox,
   Center,
 } from "@chakra-ui/react";
-import { BsPen, BsChevronDown, BsChevronUp, BsFolder2Open, BsPlusCircleFill, BsTrash3, BsArrowDownCircle, BsXCircle } from "react-icons/bs";
+import {
+  BsPen,
+  BsChevronDown,
+  BsChevronUp,
+  BsFolder2Open,
+  BsPlusCircleFill,
+  BsTrash3,
+  BsArrowDownCircle,
+  BsXCircle,
+  BsStars,
+} from "react-icons/bs";
 
 type TodoItem = {
   id: number;
@@ -28,7 +38,7 @@ type TodoItem = {
 
 interface ImageData {
   name: string;
-  data: string; // Assuming base64 string here
+  data: string;
 }
 
 export default function Home() {
@@ -162,7 +172,6 @@ export default function Home() {
           data: imageData,
         };
         setImagesE(newImage.data);
-        // localStorage.setItem("uploadedImages", JSON.stringify(newImage));
       };
       reader.readAsDataURL(file);
     }
@@ -231,17 +240,10 @@ export default function Home() {
           data: imageData,
         };
         setImages(newImage);
-        // localStorage.setItem("uploadedImages", JSON.stringify(newImage));
       };
       reader.readAsDataURL(file);
     }
   };
-  // useState(() => {
-  //   const uploadedImages = localStorage.getItem("uploadedImages");
-  //   if (uploadedImages) {
-  //     setImages(JSON.parse(uploadedImages));
-  //   }
-  // });
   return (
     <div className="px-96 p-24">
       <div className="flex flex-row justify-between">
@@ -265,7 +267,13 @@ export default function Home() {
           {editChecked ? "On" : "Off"}
         </div>
         <div>
-        <Button className="gap-3" onClick={fetchImport}><BsFolder2Open className="text-xl"/>Import</Button>
+          <Button onClick={fetchData} className="mr-3">
+            <BsStars className="text-2xl" />
+          </Button>
+          <Button className="gap-3" onClick={fetchImport}>
+            <BsFolder2Open className="text-xl" />
+            Import
+          </Button>
           <Button
             onClick={onOpen}
             className="rounded-full"
@@ -276,63 +284,100 @@ export default function Home() {
           </Button>
         </div>
       </div>
-      {editChecked && <h1 className="bg-[#000000] text-white rounded-full px-3 py-2 font-extrabold w-32 text-center">Edit Mode</h1>}
-      {list.length ==0 && <Center className="flex flex-col text-[#b6b6b6] border-2 w-full h-64 shadow-2xl rounded-3xl ">
-        <h1 className="text-3xl text-center font-bold">Your To-Do is Empty</h1>
-        <h1 className="text-xl text-center">Try add a new To-Do by click + Button at the upper right.</h1>
-        <h1 className="text-xl text-center">or if you have nothing to do <Button onClick={fetchData} bg={"#00000000"}>Click Here</Button></h1>
-          </Center>}
+      {editChecked && (
+        <h1 className="bg-[#000000] text-white rounded-full px-3 py-2 font-extrabold w-32 text-center my-6">
+          Edit Mode
+        </h1>
+      )}
+      {list.length == 0 && (
+        <Center className="flex flex-col text-[#b6b6b6] border-2 w-full h-64 shadow-2xl rounded-3xl ">
+          <h1 className="text-3xl text-center font-bold">
+            Your To-Do is Empty
+          </h1>
+          <h1 className="text-xl text-center">
+            Try add a new To-Do by click + at the upper right.
+          </h1>
+          <h1 className="text-xl text-center">
+            or if you have nothing to do{" "}
+            <Button onClick={fetchData} bg={"#00000000"}>
+              <BsStars className="text-2xl" />
+            </Button>
+          </h1>
+        </Center>
+      )}
       <div className="flex flex-col gap-1">
         {list.map((item) => {
           return (
-            <div key={item.id} className="flex flex-row bg-[#FFFFFF] shadow-2xl rounded-2xl p-3 justify-between content-center">
+            <div
+              key={item.id}
+              className="flex flex-row bg-[#FFFFFF] shadow-2xl rounded-2xl p-3 justify-between content-center"
+            >
               <div className="flex flex-row ">
-              <Checkbox
-                isChecked={item.completed}
-                size="lg"
-                colorScheme="green"
-                onChange={() => handleCheck(item.id)}
-                className="mr-3"
-              />
-              {item.image && (
-                <Image
-                  src={String(item.image)}
-                  alt="Image"
-                  width={100}
-                  height={100}
-                  className="rounded-xl w-16 h-16 mr-3"
+                <Checkbox
+                  isChecked={item.completed}
+                  size="lg"
+                  colorScheme="green"
+                  onChange={() => handleCheck(item.id)}
+                  className="mr-3"
                 />
-              )}
-              {/* {item.id} */}
-              <h1 className="text-lg">{item.todo}</h1>
+                {item.image && (
+                  <Image
+                    src={String(item.image)}
+                    alt="Image"
+                    width={100}
+                    height={100}
+                    className="rounded-xl w-16 h-16 mr-3"
+                  />
+                )}
+                <h1 className="text-lg">{item.todo}</h1>
               </div>
               <div className="content-center">
-              {editChecked && (
-                <div className="content-center">
-                <Button onClick={() => openModal(item.id)} gap={2} mr={3}><BsPen/>Edit</Button>
-                  <Button onClick={() => handleUp(item.id)} mr={1} rounded={"full"}
-                    paddingX={-1}><BsChevronUp/></Button>
-                  <Button onClick={() => handleDown(item.id)} mr={3} rounded={"full"}
-                    paddingX={-1}><BsChevronDown/></Button>
-                  <Button
-                    colorScheme={"red"}
-                    onClick={() => handleRemove(item.id)}
-                    rounded={"full"}
-                    paddingX={-1}
-                  >
-                    <BsTrash3/>
-                  </Button>
-                </div>
-                
-              )}
+                {editChecked && (
+                  <div className="content-center">
+                    <Button onClick={() => openModal(item.id)} gap={2} mr={3}>
+                      <BsPen />
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={() => handleUp(item.id)}
+                      mr={1}
+                      rounded={"full"}
+                      paddingX={-1}
+                    >
+                      <BsChevronUp />
+                    </Button>
+                    <Button
+                      onClick={() => handleDown(item.id)}
+                      mr={3}
+                      rounded={"full"}
+                      paddingX={-1}
+                    >
+                      <BsChevronDown />
+                    </Button>
+                    <Button
+                      colorScheme={"red"}
+                      onClick={() => handleRemove(item.id)}
+                      rounded={"full"}
+                      paddingX={-1}
+                    >
+                      <BsTrash3 />
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           );
         })}
       </div>
       <div className="flex flex-row justify-between mt-12">
-      <Button onClick={exportListToFile} className="gap-3"><BsArrowDownCircle className="text-xl"/>Export</Button>
-      <Button onClick={() => setList([])} className="gap-3"><BsXCircle className="text-xl"/>Clear List</Button>
+        <Button onClick={exportListToFile} className="gap-3">
+          <BsArrowDownCircle className="text-xl" />
+          Export
+        </Button>
+        <Button onClick={() => setList([])} className="gap-3" colorScheme="red">
+          <BsXCircle className="text-xl" />
+          Clear List
+        </Button>
       </div>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
@@ -343,7 +388,7 @@ export default function Home() {
             <Input placeholder="Enter a new to-do" onChange={handleChangeAdd} />
             <div>
               <Center className="flex flex-col mt-6">
-                <h1 className="text-xl">อัปโหลดรูป</h1>
+                <h1 className="text-xl">Upload an Image</h1>
                 <input
                   type="file"
                   onChange={handleFileChange}
@@ -362,8 +407,12 @@ export default function Home() {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
-            <Button onClick={() => newTodo()}>Add</Button>
+            <div className="flex flex-row justify-between w-full">
+              <Button onClick={onClose}>Close</Button>
+              <Button onClick={() => newTodo()} colorScheme="teal">
+                Add
+              </Button>
+            </div>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -380,7 +429,7 @@ export default function Home() {
             />
             <div>
               <Center className="flex flex-col mt-6">
-                <h1 className="text-xl">อัปโหลดรูป</h1>
+                <h1 className="text-xl">Upload an Image</h1>
                 <input
                   type="file"
                   onChange={handleFileChangeE}
@@ -399,8 +448,12 @@ export default function Home() {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onCloseE}>Close</Button>
-            <Button onClick={handleEditItem}>Save</Button>
+            <div className="flex flex-row justify-between w-full">
+              <Button onClick={onCloseE}>Close</Button>
+              <Button onClick={handleEditItem} colorScheme="teal">
+                Save
+              </Button>
+            </div>
           </ModalFooter>
         </ModalContent>
       </Modal>
