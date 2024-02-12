@@ -245,9 +245,9 @@ export default function Home() {
     }
   };
   return (
-    <div className="px-96 p-24">
+    <div className="p-6 lg:px-96 lg:p-24">
       <div className="flex flex-row justify-between">
-        <h1 className="text-6xl font-extrabold">My To-Do List</h1>
+        <h1 className="text-4xl lg:text-6xl font-extrabold">My To-Do List</h1>
         <h1 className="text-6xl font-extrabold">
           {list.length - completedCount}
         </h1>
@@ -374,10 +374,12 @@ export default function Home() {
           <BsArrowDownCircle className="text-xl" />
           Export
         </Button>
-        <Button onClick={() => setList([])} className="gap-3" colorScheme="red">
+        {editChecked && (
+          <Button onClick={() => setList([])} className="gap-3" colorScheme="red">
           <BsXCircle className="text-xl" />
           Clear List
         </Button>
+        )}
       </div>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
