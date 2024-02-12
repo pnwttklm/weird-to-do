@@ -266,6 +266,7 @@ export default function Home() {
           />{" "}
           {editChecked ? "On" : "Off"}
         </div>
+        {!editChecked && (
         <div>
           <Button onClick={fetchData} className="mr-3">
             <BsStars className="text-2xl" />
@@ -283,17 +284,22 @@ export default function Home() {
             <BsPlusCircleFill className="text-4xl" />
           </Button>
         </div>
+        )}
       </div>
       {editChecked && (
-        <h1 className="bg-[#000000] text-white rounded-full px-3 py-2 font-extrabold w-32 text-center my-6">
-          Edit Mode
+        <div className="flex felxroe justify-between my-6">
+          <h1 className="bg-[#000000] text-white rounded-full px-6 py-2 font-extrabold w-34 text-center">
+          Edit Mode: On
         </h1>
+        </div>
+        
       )}
       {list.length == 0 && (
         <Center className="flex flex-col text-[#b6b6b6] border-2 w-full h-64 shadow-2xl rounded-3xl ">
           <h1 className="text-3xl text-center font-bold">
             Your To-Do is Empty
           </h1>
+          <Button onClick={onOpen} my={'3'}><BsPlusCircleFill className="text-2xl mr-2" /> Add a New To-Do</Button>
           <h1 className="text-xl text-center">
             Try add a new To-Do by click + at the upper right.
           </h1>
@@ -304,6 +310,7 @@ export default function Home() {
             </Button>
           </h1>
         </Center>
+        
       )}
       <div className="flex flex-col gap-1">
         {list.map((item) => {
@@ -370,10 +377,14 @@ export default function Home() {
         })}
       </div>
       <div className="flex flex-row justify-between mt-12">
+        <div>
+      {!editChecked && (
         <Button onClick={exportListToFile} className="gap-3">
           <BsArrowDownCircle className="text-xl" />
           Export
         </Button>
+      )}
+      </div>
         {editChecked && (
           <Button onClick={() => setList([])} className="gap-3" colorScheme="red">
           <BsXCircle className="text-xl" />
